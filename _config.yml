@@ -14,31 +14,40 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 title: もょもと
-email: 1991.daiki@gmail.com
+subtitle: moyomoto
 description: >- # this means to ignore newlines until "baseurl:"
-  Here is ami-GS page, here should include my profile and what I have learned.
-  The contents would be updated
+Here is ami-GS page, here should be include my profile and what I have learned.
+
+# You'll want to customize url and baseurl for your own site:
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "" # the base hostname & protocol for your site, e.g. http://example.com
-twitter_username: ami_GX
-github_username:  ami-GS
-linkedin_username: daiki-aminaka
-future: true
+url: "" # the base hostname & protocol for your site
+author: Daiki AMINAKA
+email: 1991.daiki@gmail.com
 
-# Build settings
+# Social settings
+facebook_url:
+github_url: ami-GS
+googleplus_url:
+instagram_url:
+linkedin_url: daiki-aminaka
+pinterest_url:
+slack_url:
+twitter_url: ami_GX
+
+# Google Analytics Tracking ID goes here:
+google_analytics: UA-49994041-3
+
+# The following settings are NECESSARY for the Prologue theme to run:
+theme: jekyll-theme-prologue
+collections: [sections]
+
+avatar: /assets/images/avatar.png
+
+highlighter: rouge
+
 markdown: kramdown
-theme: jekyll-swiss
-plugins:
-  - jekyll-feed
-
-# Exclude from processing.
-# The following items will not be processed, by default. Create a custom list
-# to override the default setting.
-# exclude:
-#   - Gemfile
-#   - Gemfile.lock
-#   - node_modules
-#   - vendor/bundle/
-#   - vendor/cache/
-#   - vendor/gems/
-#   - vendor/ruby/
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+gems:
+  - rouge
