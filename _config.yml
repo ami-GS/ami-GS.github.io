@@ -16,7 +16,7 @@
 title: もょもと
 subtitle: moyomoto
 description: >- # this means to ignore newlines until "baseurl:"
-Here is ami-GS page, here should be include my profile and what I have learned.
+    Here is ami-GS page, here should be include my profile and what I have learned.
 
 # You'll want to customize url and baseurl for your own site:
 baseurl: "" # the subpath of your site, e.g. /blog
