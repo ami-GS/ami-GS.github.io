@@ -21,8 +21,7 @@ And use environment variables bellows are used in this article
 ``` shell
 $ MIP=192.168.201.10 # master node's ip address
 $ CIP=192.168.201.100 # compute node's ip address offset
-$ NIP=192.168.201.5 # nfs node's ip address
-$ CHROOT=/opt/ohpc/admin/images/centos7.2/
+$ CHROOT=/opt/ohpc/admin/images/centos7.4/
 $ CNAME=compute # your compute node's name
 $ CNUM=32 # num of computes
 ```
@@ -37,22 +36,14 @@ The requirements bellows are used in my environment. I believe other software ve
 ## Procedure
 ### Install on master
 This is almost same as [This](https://severalnines.com/blog/installing-kubernetes-cluster-minions-centos7-manage-pods-services)
-The difference is etcd location
-
-``` shell
-ETCD_NAME=default
-ETCD_DATA_DIR="/var/lib/etcd/default.etcd"
-ETCD_LISTEN_CLIENT_URLS="http://0.0.0.0:2379"
-ETCD_ADVERTISE_CLIENT_URLS="http://localhost:2379"
-```
 
 
 ### Before creating VNFS
-In `recipe.sh` OpenHPC has problem to install kernel for compute nodes. We need to fix it at first
+In `recipe.sh` OpenHPC has problem to install kernel for compute nodes. It should installs as latest as possible. We need to fix it at first
 
 ``` shell
 $ yum -y --installroot=$CHROOT install kernel
-$ # This installs latest kernel, but compute node uses base version
+$ # This installs latest kernel version, but compute node uses base version
 $ # and cause error when launching dockerd because of no ip_tables kernel module
 $ # bellow could solve it
 $ KERNEL_VERSION=`uname -r`
@@ -65,7 +56,7 @@ $ export OHPC_INPUT_LOCAL=./input.local # change config as you want
 $ ./recipe.sh
 ```
 
-Thre `./recipe.sh` tries to reboot compute node after finishing create VNFS, but you don't need to wait until then.
+The `./recipe.sh` tries to reboot compute node after finishing create VNFS, but you don't need to wait until then.
 
 You can stop the process by Ctr-C just after finishing create VNFS.
 
@@ -99,15 +90,33 @@ to:   KUBELET_HOSTNAME="--hostname_override=%{NETDEV::ETH0::IPADDR}"
 
 from: KUBELET_API_SERVER="--api_servers=http://128.0.0.1:8080"
 to:   KUBELET_API_SERVER="--api_servers=http://192.168.50.10:8080"
+
+add lines for avoiding ClusterDNS warning:
+KUBELET_DNS="--cluster-dns=10.10.0.10"
+KUBELET_DOMAIN="--cluster-domain=cluster.local"
 ```
 The `%{NETDEV::ETH0::IPADDR}` is for dynamic provisioning for each compute node.
 You can use another interface, like `ETH1`, `IB0`. `IB0` is infiniband or omnipath interface.
 
 ### Install k8s for compute nodes
-Install k8s and flannel to compute node via pdsh from master node
+Install k8s and flannel to compute node via pdsh from master node.
+python-rhsm is for credential to pull docker image.
 ``` shell
-$ pdsh -w $CNAME[1-$CNUM] yum install -y kubernetes flannel
+$ pdsh -w $CNAME[1-$CNUM] yum install -y kubernetes flannel python-rhsm
 $ pdsh -w $CNAME[1-$CNUM] perl -pi -e "s/127.0.0.1/$MIP/" /etc/sysconfig/flanneld
 $ pdsh -w $CNAME[1-$CNUM] perl -pi -e "s/127.0.0.1/$MIP/" /etc/kubernetes/config
 ```
 Because install k8s and flannel directly to `$CHROOT` cause error, that's why this installation is conducted after booting up the compute nodes.
+
+
+if you are using CentOS, system needs credential for pulling docker image from network.
+bellow can resolve it
+``` shell
+$ yum install -y python-rhsm
+$ # check credential
+$ ls -la /etc/docker/certs.d/registry.access.redhat.com/redhat-ca.crt
+```
+
+
+
+__WIP__
