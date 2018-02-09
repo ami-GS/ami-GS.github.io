@@ -6,4 +6,6 @@ icon: fa-book
 order: 3
 ---
 
+Will move the service to the one in Engilsh, sorry for inconvenience.
+
 [読書メーター](https://bookmeter.com/users/750986)
