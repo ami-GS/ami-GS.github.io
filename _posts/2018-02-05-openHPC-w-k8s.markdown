@@ -101,6 +101,9 @@ You can use another interface, like `ETH1`, `IB0`. `IB0` is infiniband or omnipa
 ### Install k8s for compute nodes
 Install k8s and flannel to compute node via pdsh from master node.
 python-rhsm is for credential to pull docker image.
+
+I recommend to write shell script to run these lines at once for each boot time.
+
 ``` shell
 $ pdsh -w $CNAME[1-$CNUM] yum install -y kubernetes flannel python-rhsm
 $ pdsh -w $CNAME[1-$CNUM] perl -pi -e "s/127.0.0.1/$MIP/" /etc/sysconfig/flanneld
@@ -108,8 +111,7 @@ $ pdsh -w $CNAME[1-$CNUM] perl -pi -e "s/127.0.0.1/$MIP/" /etc/kubernetes/config
 ```
 Because install k8s and flannel directly to `$CHROOT` cause error, that's why this installation is conducted after booting up the compute nodes.
 
-
-if you are using CentOS, system needs credential for pulling docker image from network.
+The python-rhsm is needd for CentOS to show credential for pulling docker image via network.
 bellow can resolve it
 ``` shell
 $ yum install -y python-rhsm
@@ -117,6 +119,36 @@ $ # check credential
 $ ls -la /etc/docker/certs.d/registry.access.redhat.com/redhat-ca.crt
 ```
 
+### Start all daemon on Master and Client
+If you want to use this environment (OpenHPC) cleanly, I recommend not to enable daemons related to k8s. It means run `systemctl DAEMON start` for each time you want k8s environment.
+
+
+#### Master
+you can use bellow like
+`kube_master.sh start`
+``` shell
+if [ $# -gt 0 ]; then
+	for SERVICES in etcd kube-apiserver kube-controller-manager kube-scheduler; do
+		systemctl $1 $SERVICES
+	done
+fi
+```
+
+#### Client
+`kube_client.sh $CNAME[1-$CNUM] start`
+``` shell
+if [ $# -gt 1 ]; then
+	for SERVICES in kube-proxy kubelet docker flanneld; do
+		pdsh -w $1 systemctl $2 $SERVICES
+	done
+fi
+```
+
+Now you can see all nodes you specified can be seen by
+``` shell
+$ kubectl get nodes
+
+```
 
 
 __WIP__
