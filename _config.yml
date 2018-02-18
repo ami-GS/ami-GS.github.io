@@ -14,7 +14,7 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 title: もょもと
-subtitle: moyomoto
+subtitle: ami-GS page
 description: >- # this means to ignore newlines until "baseurl:"
     Here is ami-GS page, here should be include my profile and what I have learned.
 
@@ -27,6 +27,7 @@ email: 1991.daiki@gmail.com
 # Social settings
 facebook_url:
 github_url: https://github.com/ami-GS
+amazon_url: https://www.amazon.co.jp/hz/wishlist/ls/3BKFDNHHBHAT8?&sort=default
 googleplus_url:
 instagram_url:
 linkedin_url: https://linkedin.com/in/daiki-aminaka
