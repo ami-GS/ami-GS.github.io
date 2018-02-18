@@ -15,7 +15,7 @@ If your compute nodes are booting from local disk (not using PXE boot), it would
 ## Configuration
 My environment was as follows
 - master node (192.168.201.10)
-- compute nodes (192.168.201.100-131)
+- compute (minion) nodes (192.168.201.100-131)
 
 And use environment variables bellows are used in this article
 ``` shell
@@ -151,4 +151,7 @@ $ kubectl get nodes
 ```
 
 
-__WIP__
+### End?
+Procedure aboves should work in your environment, but these are stil __basic__ settings. You might have to do more settings (e.g. write ingress controller) for your usage.
+
+If you have question, I would appreciate your comment bellow. Thanks! :)
