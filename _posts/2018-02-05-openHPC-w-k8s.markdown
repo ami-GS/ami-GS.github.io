@@ -30,8 +30,8 @@ $ CNUM=32 # num of computes
 The requirements bellows are used in my environment. I believe other software versions would work as well.
 
 - OpenHPC(warewulf) v1.3.3
-- CentOS7.4 (both master and client nodes)
-- Kubernetes
+- CentOS7.4 (both master and client nodes, included in OpenHPC 1.3.3)
+- Kubernetes1.5 (CentOS7.4 default)
 
 ## Procedure
 ### Install on master
@@ -89,7 +89,7 @@ from: KUBELET_HOSTNAME="--hostname_override=127.0.0.1"
 to:   KUBELET_HOSTNAME="--hostname_override=%{NETDEV::ETH0::IPADDR}"
 
 from: KUBELET_API_SERVER="--api_servers=http://128.0.0.1:8080"
-to:   KUBELET_API_SERVER="--api_servers=http://192.168.50.10:8080"
+to:   KUBELET_API_SERVER="--api_servers=http://192.168.201.10:8080"
 
 add lines for avoiding ClusterDNS warning:
 KUBELET_DNS="--cluster-dns=10.10.0.10"
@@ -134,7 +134,7 @@ if [ $# -gt 0 ]; then
 fi
 ```
 
-#### Client
+#### Client (Minion)
 `kube_client.sh $CNAME[1-$CNUM] start`
 ``` shell
 if [ $# -gt 1 ]; then
